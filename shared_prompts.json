@@ -1,0 +1,10 @@
+{
+    "abc123": {
+      "prompt": "How can I improve focus?",
+      "context": "Productivity"
+    },
+    "xyz789": {
+      "prompt": "Give me a daily gratitude quote.",
+      "context": "Wellness"
+    }
+  }

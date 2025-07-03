@@ -6,6 +6,7 @@ import pandas as pd
 import os
 from textblob import TextBlob
 import streamlit_authenticator as stauth
+import uuid
 
 st.set_page_config(page_title="Reframe", layout="centered")
 names = ['Kara Deskin', 'Test User']
@@ -41,7 +42,12 @@ if authentication_status:
             f.write(f"{timestamp} - {entry} | Sentiment: {sentiment_score:.2f}\n")
         with open("sentiment_log.csv", "a") as f:
             f.write(f"{timestamp},{sentiment_score:.2f}\n")
+        shared_id = str(uuid.uuid4())[:6]
+        with open("shared_entries.txt", "a") as f:
+            f.write(f"{shared_id}|{entry}\n")
         st.success("Your journal entry has been saved.")
+        st.info(f"Your shareable ID is: {shared_id}")
+        st.write("Share this ID with someone to let them view your entry!")
     st.subheader("Mood Tracker")
     mood = st.selectbox("How are you feeling right now?", ["Happy", "Sad", "Anxious", "Calm", "Frustrated", "Excited"])
     if st.button("Log Mood"):
@@ -60,6 +66,21 @@ if authentication_status:
         df_sent["Date"] = pd.to_datetime(df_sent["Date"])
         df_sent = df_sent.sort_values("Date")
         st.line_chart(df_sent.set_index("Date"))
+    st.subheader("View Shared Entry")
+    view_id = st.text_input("Enter a shared entry ID:")
+    if st.button("Load Shared Entry"):
+        if os.path.exists("shared_entries.txt"):
+            with open("shared_entries.txt", "r") as f:
+                entries = f.readlines()
+            found = False
+            for e in entries:
+                saved_id, saved_entry = e.strip().split("|", 1)
+                if saved_id == view_id:
+                    st.success(f"Shared Entry:\n\n{saved_entry}")
+                    found = True
+                    break
+            if not found:
+                st.error("Entry not found. Please check the ID and try again.")
     authenticator.logout('Logout', 'sidebar')
 elif authentication_status == False:
     st.error('Username or password is incorrect')
