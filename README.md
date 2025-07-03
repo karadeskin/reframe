@@ -4,11 +4,13 @@ Reframe is an AI mental health chatbot designed to support users through **Cogni
 
 ## Features
 
--  **Chatbot** using simple NLP to engage users in supportive conversation  
--  **Sentiment analysis** with TextBlob to monitor emotional trends  
--  **Daily journaling prompts** for guided self-reflection  
--  **Mood and sentiment visualizations** over time  
--  Local data logging 
+- Chatbot using simple NLP to engage users in supportive conversation
+- Sentiment analysis with TextBlob to monitor emotional trends
+- Daily journaling prompts for guided self-reflection
+- Mood and sentiment visualizations over time
+- Shareable journal entries with unique IDs for easy reflection and collaboration
+- Shared entry viewer for loading and reading journal entries by ID
+- Local data logging
 
 ## Tech Stack
 
@@ -41,6 +43,7 @@ Reframe is an AI mental health chatbot designed to support users through **Cogni
 - mood_log.csv: Tracks the mood selected by the user each day
 - sentiment_log.csv: Stores sentiment polarity scores of each journal entry
 - journal_entries.txt: Saves daily journal responses
+- shared_entries.txt: Stores shareable journal entries with unique IDs
 - Graphs generated using matplotlib for emotion trends over time
 
 ## Future Improvements 
