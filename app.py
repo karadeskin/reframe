@@ -1,25 +1,35 @@
 import streamlit as st
 from chatbot import response
-import datetime
-import random
-import pandas as pd
-import os
+import datetime, random, pandas as pd, os, uuid
+from pathlib import Path
 from textblob import TextBlob
 import streamlit_authenticator as stauth
-import uuid
 
 st.set_page_config(page_title="Reframe", layout="centered")
 names = ['Kara Deskin', 'Test User']
 usernames = ['kara', 'test']
-hashed_passwords = stauth.Hasher(['123', 'test']).generate()
-authenticator = stauth.Authenticate(
-    names, usernames, hashed_passwords, 'reframe_app', 'abcdef', cookie_expiry_days=1
-)
-name, authentication_status, username = authenticator.login('Login', 'main')
+hashed_passwords = stauth.Hasher.hash_list(['123', 'test'])  # demo only
+credentials = {
+    "usernames": {
+        usernames[0]: {"name": names[0], "password": hashed_passwords[0]},
+        usernames[1]: {"name": names[1], "password": hashed_passwords[1]},
+    }
+}
+authenticator = stauth.Authenticate(credentials, 'reframe_app', 'abcdef', cookie_expiry_days=1)
+authenticator.login(location='main', key='Login')
+name = st.session_state.get('name')
+authentication_status = st.session_state.get('authentication_status')
+username = st.session_state.get('username')
+DATA_DIR = Path(__file__).parent / "data"
+DATA_DIR.mkdir(exist_ok=True)
+journal_path   = DATA_DIR / "journal_entries.txt"
+sentiment_path = DATA_DIR / "sentiment_log.csv"
+mood_path      = DATA_DIR / "mood_log.csv"
+shared_path    = DATA_DIR / "shared_entries.txt"
 if authentication_status:
     st.title("Reframe")
     st.write(f'Welcome *{name}*')
-    st.write("Hi! My name is Reframe. I am here to guide you using CBT (Cognitive Behavioral Therapy) techniques. How are you feeling today?")
+    st.write("Hi! My name is Reframe. I am here to guide you using CBT techniques. How are you feeling today?")
     user_input = st.text_input("You:", "")
     if user_input:
         reply = response(user_input)
@@ -38,51 +48,48 @@ if authentication_status:
     if st.button("Save Entry"):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         sentiment_score = TextBlob(entry).sentiment.polarity
-        with open("journal_entries.txt", "a") as f:
+        with open(journal_path, "a") as f:
             f.write(f"{timestamp} - {entry} | Sentiment: {sentiment_score:.2f}\n")
-        with open("sentiment_log.csv", "a") as f:
+        with open(sentiment_path, "a") as f:
             f.write(f"{timestamp},{sentiment_score:.2f}\n")
         shared_id = str(uuid.uuid4())[:6]
-        with open("shared_entries.txt", "a") as f:
+        with open(shared_path, "a") as f:
             f.write(f"{shared_id}|{entry}\n")
         st.success("Your journal entry has been saved.")
         st.info(f"Your shareable ID is: {shared_id}")
-        st.write("Share this ID with someone to let them view your entry!")
     st.subheader("Mood Tracker")
     mood = st.selectbox("How are you feeling right now?", ["Happy", "Sad", "Anxious", "Calm", "Frustrated", "Excited"])
     if st.button("Log Mood"):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open("mood_log.csv", "a") as f:
+        with open(mood_path, "a") as f:
             f.write(f"{timestamp},{mood}\n")
         st.success("Your mood has been logged!")
-    if os.path.exists("mood_log.csv"):
-        df = pd.read_csv("mood_log.csv", names=["Date", "Mood"])
+    if mood_path.exists():
+        df = pd.read_csv(mood_path, names=["Date", "Mood"])
         mood_counts = df["Mood"].value_counts()
         st.subheader("Mood Overview")
         st.bar_chart(mood_counts)
-    if os.path.exists("sentiment_log.csv"):
+    if sentiment_path.exists():
         st.subheader("Sentiment Over Time")
-        df_sent = pd.read_csv("sentiment_log.csv", names=["Date", "Sentiment"])
-        df_sent["Date"] = pd.to_datetime(df_sent["Date"])
-        df_sent = df_sent.sort_values("Date")
+        df_sent = pd.read_csv(sentiment_path, names=["Date", "Sentiment"])
+        df_sent["Date"] = pd.to_datetime(df_sent["Date"], errors="coerce")
+        df_sent = df_sent.dropna(subset=["Date"]).sort_values("Date")
         st.line_chart(df_sent.set_index("Date"))
     st.subheader("View Shared Entry")
     view_id = st.text_input("Enter a shared entry ID:")
     if st.button("Load Shared Entry"):
-        if os.path.exists("shared_entries.txt"):
-            with open("shared_entries.txt", "r") as f:
+        if shared_path.exists():
+            with open(shared_path, "r") as f:
                 entries = f.readlines()
-            found = False
             for e in entries:
-                saved_id, saved_entry = e.strip().split("|", 1)
-                if saved_id == view_id:
-                    st.success(f"Shared Entry:\n\n{saved_entry}")
-                    found = True
+                parts = e.strip().split("|", 1)
+                if len(parts) == 2 and parts[0] == view_id:
+                    st.success(f"Shared Entry:\n\n{parts[1]}")
                     break
-            if not found:
+            else:
                 st.error("Entry not found. Please check the ID and try again.")
     authenticator.logout('Logout', 'sidebar')
-elif authentication_status == False:
+elif authentication_status is False:
     st.error('Username or password is incorrect')
-elif authentication_status == None:
+else:
     st.warning('Please enter your username and password')

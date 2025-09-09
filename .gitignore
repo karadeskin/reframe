@@ -1,3 +1,11 @@
+__pycache__/
+*.pyc
+venv/
+.env
+data/
 journal_entries.txt
 mood_log.csv
 sentiment_log.csv
+shared_entries.txt
+.DS_Store
+*.log
