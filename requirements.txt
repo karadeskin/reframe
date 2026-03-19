@@ -41,7 +41,10 @@ smmap==5.0.2
 streamlit==1.45.1
 streamlit-authenticator==0.4.2
 tenacity==9.1.2
-textblob==0.19.0
+transformers>=4.30.0
+torch>=2.0.0
+sentencepiece>=0.1.99
+matplotlib>=3.7.0
 toml==0.10.2
 tornado==6.5.1
 tqdm==4.67.1

@@ -9,3 +9,4 @@ sentiment_log.csv
 shared_entries.txt
 .DS_Store
 *.log
+reframe.db

@@ -4,21 +4,23 @@ Reframe is an AI mental health chatbot designed to support users through **Cogni
 
 ## Features
 
-- Chatbot using simple NLP to engage users in supportive conversation
-- Sentiment analysis with TextBlob to monitor emotional trends
+- **ML-backed chatbot** – Uses sentiment analysis to tailor CBT-style responses (supportive for negative feelings, reflective for positive)
+- **Sentiment analysis** – Pre-trained Hugging Face model (DistilBERT) to monitor emotional trends
+- **Multi-user authentication** – Secure login for personal journals
 - Daily journaling prompts for guided self-reflection
 - Mood and sentiment visualizations over time
 - Shareable journal entries with unique IDs for easy reflection and collaboration
 - Shared entry viewer for loading and reading journal entries by ID
-- Local data logging
+- SQLite-based data storage for privacy-first local logging
 
 ## Tech Stack
 
 - **Python**
 - **Streamlit** – UI and app logic
-- **TextBlob** – Sentiment analysis
-- **pandas, matplotlib** – Data visualization and storage
-- **CSV logging** – local data tracking
+- **Hugging Face Transformers** – Pre-trained sentiment analysis
+- **SQLite** – Journal entries, mood logs, and shared entries
+- **pandas** – Data analysis and chart generation
+- **streamlit-authenticator** – User authentication
 
 ## Getting Started
 
@@ -38,17 +40,15 @@ Reframe is an AI mental health chatbot designed to support users through **Cogni
    streamlit run app.py
    ```
 
-## Example Output
+## Data & Visualizations
 
-- mood_log.csv: Tracks the mood selected by the user each day
-- sentiment_log.csv: Stores sentiment polarity scores of each journal entry
-- journal_entries.txt: Saves daily journal responses
-- shared_entries.txt: Stores shareable journal entries with unique IDs
-- Graphs generated using matplotlib for emotion trends over time
+- **reframe.db** – SQLite database with `journal_entries` (text, sentiment, timestamps) and `mood_logs` (mood, timestamp) per user
+- **Mood Overview** – Bar chart of mood distribution
+- **Sentiment Over Time** – Line chart of emotional trends from journal entries
+- Shareable IDs let you load any journal entry by ID
 
-## Future Improvements 
+## Future Improvements
 
-- Add authentication for multiple users
 - Integrate with GPT for more natural conversations
 - Cloud-based storage for user data
 - Exportable reports of mood trends
