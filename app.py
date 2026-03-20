@@ -31,7 +31,8 @@ h2, h3 {
     color: #2D2A26 !important;
 }
 
-p, span, label, div {
+/* Only style text elements, not layout divs - avoids breaking Streamlit layout */
+.stApp p, .stApp span, .stApp label {
     font-family: 'DM Sans', sans-serif !important;
 }
 
@@ -53,10 +54,6 @@ p, span, label, div {
 .stButton > button:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(193, 127, 89, 0.25);
-}
-
-div[data-testid="stVerticalBlock"] > div {
-    border-radius: 12px;
 }
 
 /* Subtle chaos — slightly asymmetric blockquote feel for prompts */
