@@ -1,6 +1,10 @@
 # Reframe
 
 Reframe is an AI mental health chatbot designed to support users through **Cognitive Behavioral Therapy (CBT)** techniques. It provides a space for reflection, emotion tracking, and journaling to help users reframe their thoughts and understand their emotions over time.
+## Try it Live!!
+
+https://reframe.streamlit.app/ 
+login with test/test
 
 ## Features
 
