@@ -187,8 +187,21 @@ if authentication_status:
         if sentiment_label == "NEGATIVE" or (sentiment_score is not None and sentiment_score < 0):
             st.caption("💙 It's okay to feel this way. You don't have to fix anything right now.")
 
-    with st.expander("Need a moment? — quick grounding"):
-        st.markdown("**5-4-3-2-1:** Name 5 things you see, 4 you hear, 3 you can touch, 2 you smell, 1 you taste. No rush.")
+    st.markdown(
+        """
+        <div style="
+            background: #F5F0E8;
+            border-left: 4px solid #C17F59;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        ">
+            <strong>Need a moment?</strong> 5-4-3-2-1: Name 5 things you see, 4 you hear, 3 you can touch, 2 you smell, 1 you taste. No rush.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.divider()
     st.subheader("Mood Tracker")
