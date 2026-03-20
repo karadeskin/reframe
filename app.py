@@ -138,7 +138,7 @@ def _get_shared_entry(conn, shared_id):
 if authentication_status:
     st.markdown('<p style="font-size:0.9rem; color:#6B6560; margin-bottom:0;">✦</p>', unsafe_allow_html=True)
     st.title("Reframe")
-    st.caption("— reframe your thoughts")
+    st.caption("— reframe your thoughts · meet yourself with kindness")
     st.write(f"Hey *{name}* — welcome back.")
     st.write(
         "I'm Reframe. I'm here to guide you with CBT techniques. How are you *really* feeling today?"
@@ -156,6 +156,10 @@ if authentication_status:
         "Describe a moment that made you smile recently.",
         "What emotion are you feeling most strongly today?",
         "Write about something you're looking forward to.",
+        "What do you notice in your body right now? No need to change anything.",
+        "What's something you're trying to fix that might be okay to just sit with?",
+        "Describe a moment today when you were simply here, without trying to improve anything.",
+        "How might you be gentler with yourself around one thing that feels hard?",
     ]
     st.subheader("Daily Prompt")
     st.markdown(f"*{random.choice(prompts)}*")
@@ -183,6 +187,11 @@ if authentication_status:
 
         st.success("Your journal entry has been saved.")
         st.info(f"Your shareable ID is: {shared_id}")
+        if sentiment_label == "NEGATIVE" or (sentiment_score is not None and sentiment_score < 0):
+            st.caption("💙 It's okay to feel this way. You don't have to fix anything right now.")
+
+    with st.expander("Need a moment? — quick grounding"):
+        st.markdown("**5-4-3-2-1:** Name 5 things you see, 4 you hear, 3 you can touch, 2 you smell, 1 you taste. No rush.")
 
     st.divider()
     st.subheader("Mood Tracker")
